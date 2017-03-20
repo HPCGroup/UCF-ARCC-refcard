@@ -1,0 +1,304 @@
+\documentclass[8pt,portrait]{article}
+%\usepackage{pslatex}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{color}
+
+\usepackage{hyperref}
+\usepackage[]{url}
+\hypersetup{%
+  colorlinks=true,  
+  linkcolor = black,
+  citecolor = black, 
+  urlcolor = blue, 
+  pdfpagemode=UseNone, 
+  pdfstartview=FitH,
+  pdfauthor= {Armando Fandango},
+  pdftitle= Reference Card
+}
+
+\urlstyle{same}
+
+
+% Turn off header and footer
+\pagestyle{empty}
+
+%\setlength{\leftmargin}{0.75in}
+\setlength{\oddsidemargin}{-0.75in}
+\setlength{\evensidemargin}{-0.75in}
+\setlength{\textwidth}{7.9in}
+
+
+\setlength{\topmargin}{-0.2in}
+\setlength{\textheight}{9.8in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+
+\pdfpageheight\paperheight
+\pdfpagewidth\paperwidth
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{0mm}%
+                                     {-24pt}% \@plus -12pt \@minus -6pt}%
+                                     {0.5ex}%
+                                {\color{blue}\normalfont\large\bfseries}}
+\makeatother
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\newcommand{\code}{\texttt}
+\newcommand{\bcode}[1]{\texttt{\textbf{#1}}}
+\newcommand\F{\code{FALSE}}
+\newcommand\T{\code{TRUE}}
+
+%\newcommand{\hangpara}[2]{\hangindent#1\hangafter#2\noindent}
+%\newenvironment{hangparas}[2]{\setlength{\parindent}{\z@}\everypar={\hangpara{#1}{#2}}}
+
+\newcommand{\describe}[1]{\begin{description}{#1}\end{description}}
+
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+
+%\raggedright
+\footnotesize
+\begin{multicols*}{2}
+
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     {\Large{\textbf{\color{blue}UCF ARCC Stokes Reference Card}}} \\
+ \today
+\end{center}
+
+Created and maintained by \href{mailto:armando@ucf.edu}{Armando Fandango}, available from \href{https://github.com/HPCGroup/UCF-ARCC-refcard}{GitHub}. Feel free to contact him for contributions.
+
+\section{Getting help}
+\everypar={\hangindent=9mm}
+ARCC helpdesk: \href{mailto:request-stokes@ist.ucf.edu}{request-stokes@ist.ucf.edu}\\
+
+\section{Stokes - Logging In}
+\everypar={\hangindent=9mm}
+
+\bcode{ssh -Y -i path\_to\_your\_ssh\_key your\_username\@stokes.ist.ucf.edu}\\ For Mac/Unix/Windows based system with ssh client
+
+\bcode{nano \textasciitilde{}/.ssh/config} For setting up personal SSH configuration\\
+\bcode{Host stokes\\
+     Hostname stokes.ist.ucf.edu\\
+     user your\_username\\
+     IdentityFile absolute\_path\_to\_ssh\_key}\\
+
+
+\section{Stokes - Job Queues}
+\everypar={\hangindent=9mm}
+
+\begin{tabular}{@{}l@{\ }l@{\ }l@{\ }l}
+\code{queue} & Max Cores & Max Nodes & Max Time\\
+\code{batch64} & 512 & 64 & 240:00:00 \\
+\code{batch98} & 784 & 98 & 48:00:00 \\
+\code{batch224} & 2688 & 224 & 36:00:00 \\
+
+\end{tabular}\\
+
+
+
+
+%\section{Job Submission - Torque}
+%\begin{tabular}{@{}l@{\ }l}
+%\code{blah} & blah blah blah\\
+%\code{blah} & blah blah blah\\
+%\code{blah} & blah blah blah\\
+%\code{blah} & blah blah blah\\
+%\code{blah} & blah blah blah\\
+%\code{blah} & blah blah blah\\
+%\end{tabular}
+
+\section{SLURM - Job Submission}
+\everypar={\hangindent=9mm}
+
+\code{sbatch} Submit script for later execution
+\describe{
+\itemsep=0pt\parskip=0pt
+    \item{\code{--array=<indexes>}} {Job Array Specification}
+}
+
+\code{srun} Create a job allocation and launch a job step
+\describe{
+\itemsep=0pt\parskip=0pt
+ \item{\code{--label}} {Prepend task ID to output}
+}
+
+\code{salloc} Create job allocation and start a shell\\
+
+\textbf{Options common across sbatch, srun and salloc:}
+\describe{
+\itemsep=0pt\parskip=0pt
+    \item{\code{--account=<name>}} {Account to be charged for resources used}
+    \item{\code{--begin=<time>}} {Initiate job after specified time}
+    \item{\code{--constraint=<features>}} {Required node features}
+    \item{\code{--cpu\_per\_task=<count>}} {Number of CPU's required per task}
+    \item{\code{--dependency=<state:jobid>}} {defer until jobid reaching specified state}
+    \item{\code{--error=<filename>}} {File to store job errors}
+    \item{\code{--exclude=<hostnames>}} {Hosts to be excluded from job allocation}
+    \item{\code{--export=<name[=value]>}} {Export specified environment variable name}
+    \item{\code{--gres=<name[:count]>}} {Generic resources required for the job}
+    \item{\code{--input=<name>}} {File for input job data}
+    \item{\code{--job-name=<name>}} {A name for the job}
+} 
+
+\section{SLURM - Job Management}
+
+\code{sattach}  Connect stdin/out/err for an existing job or step
+
+\code{scancel}  Cancel jobs or steps 
+\describe{
+\itemsep=0pt\parskip=0pt
+    \item{\code{--account=<name>}} {Operate only on jobs for the specified account}
+    \item{\code{--name=<name>}} {Operate only on the specified job(s)} 
+    \item{\code{--partition=<name(s)>}} {Operate only on the jobs in specified partition(s)}
+    \item{\code{--qos=<name>}} {Operate only on the jobs using specified QoS}
+    \item{\code{--reservation=<name>}} {Operate only on specified reservation}
+    \item{\code{--state=<name(s)>}} {Operate only on job in specified state}
+    \item{\code{--user=<name>}} {Operate only on jobs for the specified user}
+    \item{\code{--nodelist=<name(s)>}} {Operate only on jobs using the specified node(s)}
+}
+    
+\code{sbcast}  Transfer file to compute node(s) allocated to a job 
+
+\code{srun\_cr}  Wrapper for srun to support Berkeley checkpoint/restart 
+
+\code{strigger} Event trigger management  create, destroy or list event triggers\\
+
+\columnbreak
+
+\section{SLURM - Get Information}
+\everypar={\hangindent=9mm}
+
+\code{sinfo}   System status - nodes, queues
+
+\code{squeue}  Job and Step status
+\describe{
+\itemsep=0pt\parskip=0pt
+    \item{\code{--account=<name>}} {Operate only on jobs for the specified account}
+    \item{\code{--jobs=<job id list>}} {Operate only on the specified job(s)} 
+    \item{\code{--name=<job name(s)>}} {Operate only on the specified job(s)} 
+    \item{\code{--partition=<name(s)>}} {Operate only on the jobs in specified partition}
+     \item{\code{--priority}} {Sort jobs by priority}
+    \item{\code{--qos=<name>}} {Operate only on the jobs using specified QoS}
+    \item{\code{--reservation=<name>}} {Operate only on specified reservation}
+    \item{\code{--state=<name(s)>}} {Operate only on job in specified state(s)}
+    \item{\code{--users=<name(s)>}} {Operate only on jobs for the specified user(s)}
+    \item{\code{--nodelist=<name(s)>}} {Operate only on jobs using the specified node(s)}
+}
+\code{smap}  Status with curses-based GUI
+
+\code{sview}  Status with GTK-based GUI
+
+\code{sacct}  Accounting info by job and step 
+
+\code{sstat}  Accounting info about currently running jobs and steps 
+
+\code{sreport}  Resource usage by cluster, partition, user, account etc. 
+
+\section{SLURM - Environment Variables}
+\begin{tabular}{@{}l@{\ }l}
+\code{SLURM\_ARRAY\_JOB\_ID} & Job Id in Array\\
+\code{SLURM\_ARRAY\_TASK\_ID} & Task Id in Array\\
+\code{SLURM\_CPUS\_PER\_TASK} & No. of CPUs per task\\
+\code{SLURM\_JOB\_ACCOUNT} & Account Name\\
+\code{SLURM\_JOB\_ID} & Job Id\\
+\code{SLURM\_JOB\_NAME} & Job Name\\
+\code{SLURM\_JOB\_NODELIST} & Names of nodes allocated\\
+\code{SLURM\_JOB\_NUM\_NODES} & No. of nodes allocated\\
+\code{SLURM\_JOB\_PARTITION} & Partition running the job\\
+\code{SLURM\_JOB\_UID} & User Id of job owner\\
+\code{SLURM\_JOB\_USER} & User name of job owner\\
+\code{SLURM\_NPROCS} & Number of cores allocated\\
+\code{SLURM\_PROCID} & Task Id (MPI Rank)\\
+\code{SLURM\_STEP\_ID} & Step Id in a Job\\
+\code{SLURM\_STEP\_NUM\_TASKS} & No. of tasks (MPI Ranks)\\
+\end{tabular}
+
+\section{SLURM - Administration}
+\everypar={\hangindent=9mm}
+\code{scontrol} Admin tool to view/update system, job, step, partition, reservation status
+
+\code{sacctmgr}  DB Admin tool to add/delete clusters, accounts, users and get/set resource limits, fair-share allocations etc. 
+
+\code{sprio}  View factors comprising job's priority
+
+\code{sshare}  View current hierarchical fair-share information 
+
+\code{sdiag}  View statistics about scheduling module
+
+\section{Torque/MOAB - User Commands}
+
+\begin{tabular}{@{}l@{\ }l}
+\code{myquota} & Check your disk usage\\
+\code{myusage} & Check your hours usage\\
+\code{qsub} & submit job\\
+\code{qstat | showq} & status of queue\\
+\code{pbsnodes | checknode} & status of node\\
+\code{checkjob} & status of node\\
+\code{mdiag} & \\
+\end{tabular}
+
+\section{StarCCM}
+Make sure the following lines are added to your ~/.ssh/config file:\\
+\bcode{Host *\\
+               StrictHostKeyChecking no\\
+               UserKnownHostsFile=/dev/null}
+
+\section{Matlab}
+
+Compile: Get an interactive node, load Matlab module and then compile the Matlab code.\\
+Run: Submit the compiled code as a SLURM job.
+
+\everypar={\hangindent=9mm}
+
+\code{mcc -m hello.m} Compile matlab code as standalone C application
+
+\code{mcc -p hello.m} Compile matlab code as standalone C++ application
+
+\end{multicols*}
+\end{document}
+
+%    \item{\code{}} {}
+%    \item{\code{}} {} 
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}  
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}
+%    \item{\code{}} {}     
